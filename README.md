@@ -202,7 +202,3 @@ VITE_APP_NAME="${APP_NAME}"
 ```
 
 ---
-
-## License
-This project is licensed under the MIT License. See the LICENSE file for details.
-
