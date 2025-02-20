@@ -9,21 +9,28 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Log;
 
 class ProcessComment implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $comment;
+    protected $commentId;
 
-    public function __construct(Comments $comment)
+    public function __construct($commentId)
     {
-        $this->comment = $comment;
+        $this->commentId = $commentId;
     }
 
     public function handle()
     {
-        // Process the comment (e.g., store in database)
-        $this->comment->save();
+        $comment = Comments::find($this->commentId);
+
+        if ($comment) {
+        $comment->save();
+            Log::info("✅ Comment {$this->commentId} processed by Redis queue.");
+        } else {
+            Log::error("❌ Failed to process comment ID: {$this->commentId}");
+        }
     }
 }

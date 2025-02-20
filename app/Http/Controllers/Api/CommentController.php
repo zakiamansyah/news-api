@@ -11,18 +11,26 @@ class CommentController extends Controller
 {
     public function store(Request $request, $newsId)
     {
-        $request->validate([
-            'content' => 'required|string',
-        ]);
+        try {
+            $request->validate([
+                'content' => 'required|string',
+            ]);
 
-        $comment = new Comments([
-            'content' => $request->content,
-            'news_id' => $newsId,
-            'user_id' => Auth::id(),
-        ]);
+            $comment = Comments::create([
+                'content' => $request->content,
+                'news_id' => $newsId,
+                'user_id' => Auth::id(),
+            ]);
 
-        dispatch(new \App\Jobs\ProcessComment($comment));
+            dispatch(new \App\Jobs\ProcessComment($comment->id));
 
-        return response()->json(['message' => 'Comment queued for processing'], 202);
+            return response()->json(['message' => 'Comment queued for processing'], 202);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to process comment',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+
 }
