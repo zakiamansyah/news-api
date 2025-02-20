@@ -6,7 +6,7 @@ This is a Laravel-based API for managing news articles and comments. Below are t
 
 ### Clone the repository:
 ```sh
-git clone <repository-url>
+git clone git@github.com:zakiamansyah/news-api.git
 cd news-api
 ```
 
